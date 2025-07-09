@@ -18,21 +18,19 @@ This project is a complete learning resource for understanding and implementing 
 
 ```
 📁 node-express-bullmq/
-├── 📄 server.js              # Express API server with job endpoints
-├── 📄 redis.js               # Redis connection configuration
+├── 📄 server.js              # Express API server with comprehensive endpoints
+├── 📄 redis.js               # Redis connection configuration  
 ├── 📄 dashboard.js           # Bull Board monitoring dashboard
-├── 📄 test-bullmq.sh         # Interactive testing script
+├── 📄 package.json           # Project dependencies and scripts
+├── 📄 README.md              # This comprehensive guide
 ├── 📁 jobs/
-│   └── 📄 emailJob.js        # Job creation functions
+│   └── 📄 emailJob.js        # Job creation functions (basic, urgent, scheduled)
 ├── 📁 queues/
-│   ├── 📄 emailQueue.js      # Main email queue definition
-│   └── 📄 allQueues.js       # Multiple queue examples
+│   └── 📄 emailQueue.js      # Main email queue with event listeners
 ├── 📁 workers/
-│   ├── 📄 emailWorker.js     # Basic job processor
-│   └── 📄 enhancedEmailWorker.js # Advanced worker with features
+│   └── 📄 emailWorker.js     # Job processor with detailed logging
 └── 📁 examples/
-    ├── 📄 testing-examples.js    # Testing patterns
-    └── 📄 advanced-examples.js   # Advanced features demo
+    └── 📄 advanced-examples.js   # Advanced features (batch, campaigns, monitoring)
 ```
 
 ## 🔧 Technologies Used
@@ -84,65 +82,178 @@ This project is a complete learning resource for understanding and implementing 
    - API Server: http://localhost:3000
    - Monitoring Dashboard: http://localhost:3000/admin/queues
 
-## 📊 Features Demo
+## 📊 Available API Endpoints
 
-### 1. **Basic Email Job**
+### Basic Email Operations
+
+#### 1. **Send Immediate Email**
 ```bash
 curl -X POST http://localhost:3000/send-email \
   -H "Content-Type: application/json" \
   -d '{"to":"user@example.com"}'
 ```
 
-### 2. **Delayed Job (10 seconds)**
+#### 2. **Send Delayed Email**
 ```bash
 curl -X POST http://localhost:3000/send-email \
   -H "Content-Type: application/json" \
   -d '{"to":"delayed@example.com","delay":10000}'
 ```
 
-### 3. **High Priority Job**
+#### 3. **Send High Priority Email**
 ```bash
 curl -X POST http://localhost:3000/send-urgent \
   -H "Content-Type: application/json" \
   -d '{"to":"urgent@example.com"}'
 ```
 
-### 4. **Recurring Job**
+#### 4. **Schedule Email for Specific Time**
 ```bash
-curl -X POST http://localhost:3000/send-recurring
+curl -X POST http://localhost:3000/schedule-email \
+  -H "Content-Type: application/json" \
+  -d '{"to":"user@example.com","scheduleTime":"2025-07-10T14:00:00.000Z"}'
 ```
 
-### 5. **Batch Processing**
+#### 5. **Create Recurring Email Job**
+```bash
+curl -X POST http://localhost:3000/send-recurring \
+  -H "Content-Type: application/json" \
+  -d '{"cron":"*/5 * * * *"}'
+```
+
+### Advanced Email Operations
+
+#### 6. **Batch Email Processing**
 ```bash
 curl -X POST http://localhost:3000/send-batch \
   -H "Content-Type: application/json" \
-  -d '{"recipients":["user1@example.com","user2@example.com"],"batchSize":5}'
+  -d '{"recipients":["user1@example.com","user2@example.com","user3@example.com"],"batchSize":2}'
 ```
 
-### 6. **Progress Tracking**
+#### 7. **Email with Progress Tracking**
 ```bash
 curl -X POST http://localhost:3000/send-with-progress \
   -H "Content-Type: application/json" \
-  -d '{"recipients":["user1@example.com","user2@example.com"]}'
+  -d '{"recipients":["user1@example.com","user2@example.com","user3@example.com"]}'
 ```
 
-### 7. **Email Campaign**
+#### 8. **Complete Email Campaign**
 ```bash
 curl -X POST http://localhost:3000/create-campaign \
   -H "Content-Type: application/json" \
-  -d '{"name":"Newsletter","recipients":["user@example.com"],"templateId":"template1"}'
+  -d '{
+    "name":"Summer Newsletter 2025",
+    "recipients":["subscriber1@example.com","subscriber2@example.com"],
+    "templateId":"newsletter_summer_2025",
+    "sendTime":"2025-07-15T09:00:00.000Z"
+  }'
+```
+
+### Monitoring & Management
+
+#### 9. **Get Job Details**
+```bash
+curl http://localhost:3000/job/123
+```
+
+#### 10. **Track Job Progress**
+```bash
+curl http://localhost:3000/job/123/progress
+```
+
+#### 11. **Get Queue Statistics**
+```bash
+curl http://localhost:3000/queue/stats
+```
+
+#### 12. **Clean Up Old Jobs**
+```bash
+curl -X POST http://localhost:3000/queue/cleanup
+```
+
+#### 13. **Retry Failed Job**
+```bash
+curl -X POST http://localhost:3000/job/123/retry
+```
+
+#### 14. **API Information**
+```bash
+curl http://localhost:3000/
 ```
 
 ## 🧪 Interactive Testing
 
-Use the included testing script for easy experimentation:
+The server automatically displays helpful commands when you start it with `npm run dev`. You'll see all available endpoints and example curl commands in the console output.
+
+### Quick Test Commands
+
+After starting the server (`npm run dev`), try these commands:
 
 ```bash
-chmod +x test-bullmq.sh
-./test-bullmq.sh
+# Test basic email
+curl -X POST http://localhost:3000/send-email \
+  -H "Content-Type: application/json" \
+  -d '{"to":"test@example.com"}'
+
+# Test delayed email (10 seconds)
+curl -X POST http://localhost:3000/send-email \
+  -H "Content-Type: application/json" \
+  -d '{"to":"delayed@example.com","delay":10000}'
+
+# Test urgent email
+curl -X POST http://localhost:3000/send-urgent \
+  -H "Content-Type: application/json" \
+  -d '{"to":"urgent@example.com"}'
+
+# Test recurring job
+curl -X POST http://localhost:3000/send-recurring
+
+# Test batch processing
+curl -X POST http://localhost:3000/send-batch \
+  -H "Content-Type: application/json" \
+  -d '{"recipients":["user1@example.com","user2@example.com"]}'
+
+# Test progress tracking
+curl -X POST http://localhost:3000/send-with-progress \
+  -H "Content-Type: application/json" \
+  -d '{"recipients":["user1@example.com","user2@example.com"]}'
+
+# Test email campaign
+curl -X POST http://localhost:3000/create-campaign \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Test Campaign","recipients":["user1@example.com"],"templateId":"template1"}'
 ```
 
-This script provides an interactive menu to test all features!
+## 🎮 Server Output & Help
+
+When you start the server with `npm run dev`, you'll see comprehensive output like this:
+
+```
+🚀 BullMQ Demo Server Started!
+📡 API Server: http://localhost:3000
+📊 Dashboard: http://localhost:3000/admin/queues
+
+📋 Available endpoints:
+  GET  /                 - API info
+  POST /send-email       - Add email job
+  POST /send-urgent      - Add urgent email job
+  POST /send-recurring   - Add recurring job
+  POST /schedule-email   - Schedule email
+  POST /send-batch       - Send batch email
+  POST /send-with-progress - Send email with progress tracking
+  POST /create-campaign  - Create email campaign
+
+💡 Try these curl commands:
+  curl -X POST http://localhost:3000/send-email -H "Content-Type: application/json" -d '{"to":"test@example.com"}'
+  curl -X POST http://localhost:3000/send-email -H "Content-Type: application/json" -d '{"to":"delayed@example.com","delay":10000}'
+  curl -X POST http://localhost:3000/send-urgent -H "Content-Type: application/json" -d '{"to":"urgent@example.com"}'
+  curl -X POST http://localhost:3000/send-recurring
+  curl -X POST http://localhost:3000/send-batch -H "Content-Type: application/json" -d '{"recipients":["user1@example.com","user2@example.com"]}'
+  curl -X POST http://localhost:3000/send-with-progress -H "Content-Type: application/json" -d '{"recipients":["user1@example.com","user2@example.com"]}'
+  curl -X POST http://localhost:3000/create-campaign -H "Content-Type: application/json" -d '{"name":"Test Campaign","recipients":["user1@example.com"],"templateId":"template1"}'
+```
+
+The server provides immediate copy-paste commands for testing all features!
 
 ## 📈 Monitoring Dashboard
 
@@ -219,6 +330,12 @@ await emailQueue.add('sendEmail', data, {
 
 ## 🎯 Production Features
 
+### Comprehensive API Endpoints (14 Total)
+- **Basic Operations**: Send immediate, delayed, urgent, and recurring emails
+- **Advanced Operations**: Batch processing, progress tracking, email campaigns
+- **Monitoring**: Job details, progress tracking, queue statistics
+- **Management**: Job retry, queue cleanup, health monitoring
+
 ### Error Handling & Retries
 - **Exponential backoff**: `2s → 4s → 8s → 16s`
 - **Custom retry strategies**
@@ -245,20 +362,17 @@ await emailQueue.add('sendEmail', data, {
 ## 📚 File Structure Explained
 
 ### Core Files
-- **[`server.js`](server.js)** - Express API with job creation endpoints
-- **[`redis.js`](redis.js)** - Redis connection with monitoring
-- **[`dashboard.js`](dashboard.js)** - Bull Board configuration
+- **[`server.js`](server.js)** - Express API with comprehensive job endpoints (14 endpoints total)
+- **[`redis.js`](redis.js)** - Redis connection with error handling and monitoring
+- **[`dashboard.js`](dashboard.js)** - Bull Board configuration for queue monitoring
 
 ### Job Management
-- **[`jobs/emailJob.js`](jobs/emailJob.js)** - Job creation functions
-- **[`queues/emailQueue.js`](queues/emailQueue.js)** - Queue definition
-- **[`workers/emailWorker.js`](workers/emailWorker.js)** - Basic job processor
-- **[`workers/enhancedEmailWorker.js`](workers/enhancedEmailWorker.js)** - Advanced features
+- **[`jobs/emailJob.js`](jobs/emailJob.js)** - Job creation functions (basic, urgent, scheduled)
+- **[`queues/emailQueue.js`](queues/emailQueue.js)** - Main email queue with event listeners
+- **[`workers/emailWorker.js`](workers/emailWorker.js)** - Job processor with comprehensive logging
 
-### Examples & Testing
-- **[`examples/testing-examples.js`](examples/testing-examples.js)** - Testing patterns
-- **[`examples/advanced-examples.js`](examples/advanced-examples.js)** - Advanced features
-- **[`test-bullmq.sh`](test-bullmq.sh)** - Interactive testing script
+### Advanced Features
+- **[`examples/advanced-examples.js`](examples/advanced-examples.js)** - Batch processing, campaigns, monitoring
 
 ## 🎓 Learning Path
 
@@ -334,7 +448,7 @@ sudo systemctl restart redis
 - **[BullMQ Documentation](https://docs.bullmq.io/)**
 - **[Redis Documentation](https://redis.io/documentation)**
 - **[Bull Board GitHub](https://github.com/felixmosh/bull-board)**
-- **[Complete Guide](BULLMQ_GUIDE.md)** - Detailed learning guide included
+- **[Complete Guide](BULLMQ_GUIDE.md)** - Detailed learning guide included (if available)
 
 ## 🤝 Contributing
 
